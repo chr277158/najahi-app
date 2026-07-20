@@ -1,0 +1,268 @@
+/* ===== الهيدر مع التنقل ===== */
+.header-with-nav {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-content h1 {
+    color: #667eea;
+    font-size: 2em;
+    margin: 0;
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.student-info span {
+    color: #333;
+    font-weight: bold;
+}
+
+.btn-logout {
+    padding: 8px 20px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-logout:hover {
+    background: #c0392b;
+}
+
+/* ===== لوحة التحكم ===== */
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.welcome-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.welcome-card h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.welcome-card p {
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+
+/* ===== الإحصائيات ===== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.stat-value {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 1em;
+}
+
+/* ===== الإجراءات السريعة ===== */
+.quick-actions, .recent-results {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.quick-actions h3, .recent-results h3 {
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px;
+    background: #f8f9ff;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.action-card:hover {
+    border-color: #667eea;
+    transform: translateY(-3px);
+}
+
+.action-icon {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.action-text {
+    color: #333;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* ===== قائمة النتائج ===== */
+.results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #f8f9ff;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.result-item:hover {
+    background: #eef0ff;
+}
+
+.result-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.result-subject {
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1em;
+}
+
+.result-date {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.result-score {
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.result-score.excellent {
+    background: #27ae60;
+    color: white;
+}
+
+.result-score.good {
+    background: #f39c12;
+    color: white;
+}
+
+.result-score.needs-improvement {
+    background: #e74c3c;
+    color: white;
+}
+
+.no-results {
+    text-align: center;
+    color: #999;
+    padding: 30px;
+}
+
+/* ===== رسائل الخطأ ===== */
+.error-message {
+    background: #fee;
+    color: #c33;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border-right: 4px solid #c33;
+}
+
+/* ===== تذييل النموذج ===== */
+.form-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.form-footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ===== التصميم المتجاوب ===== */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .result-item {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}

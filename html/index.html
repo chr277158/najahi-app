@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نَجَاحِي - منصة تعليمية</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- رأس الصفحة -->
+        <header class="header">
+            <h1>🌟 نَجَاحِي 🌟</h1>
+            <p>منصة تعليمية تفاعلية للتلاميذ</p>
+        </header>
+
+        <!-- نموذج التسجيل -->
+        <div class="card">
+            <h2>🎒 مرحباً بك يا بطل!</h2>
+            <p>أدخل معلوماتك لبدء المغامرة التعليمية</p>
+            
+            <form id="studentForm">
+                <!-- حقل الاسم -->
+                <div class="form-group">
+                    <label for="studentName">✏️ ما اسمك؟</label>
+                    <input type="text" id="studentName" placeholder="اكتب اسمك هنا..." required>
+                </div>
+
+                <!-- اختيار المستوى -->
+                <div class="form-group">
+                    <label for="studentLevel">📚 مستواك الدراسي:</label>
+                    <select id="studentLevel" required>
+                        <option value="">-- اختر مستواك --</option>
+                        <option value="3">السنة الثالثة ابتدائي</option>
+                        <option value="5">السنة الخامسة ابتدائي</option>
+                    </select>
+                </div>
+
+                <!-- اختيار الثلاثي -->
+                <div class="form-group">
+                    <label for="trimestre">📅 الثلاثي:</label>
+                    <select id="trimestre">
+                        <option value="1">الثلاثي الأول</option>
+                        <option value="2">الثلاثي الثاني</option>
+                        <option value="3">الثلاثي الثالث</option>
+                    </select>
+                </div>
+
+                <!-- زر البدء -->
+                <button type="submit" class="btn-primary">
+                    🚀 ابدأ المغامرة
+                </button>
+            </form>
+        </div>
+
+        <!-- تذييل الصفحة -->
+        <footer class="footer">
+            <p>© 2026 نَجَاحِي - جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

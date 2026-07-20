@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - نَجَاحِي</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🌟 نَجَاحِي 🌟</h1>
+            <p>منصة تعليمية تفاعلية</p>
+        </header>
+
+        <div class="card">
+            <h2>🔐 تسجيل الدخول</h2>
+            <p>أدخل بياناتك للدخول إلى حسابك</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">👤 اسم المستخدم</label>
+                    <input type="text" id="username" placeholder="أدخل اسم المستخدم" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">🔑 كلمة المرور</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
+                </div>
+
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                <button type="submit" class="btn-primary">
+                    🚀 دخول
+                </button>
+            </form>
+
+            <div class="form-footer">
+                <p>ليس لديك حساب؟ <a href="/register.html">إنشاء حساب جديد</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        // التحقق من وجود تسجيل دخول سابق
+        if (Auth.isLoggedIn()) {
+            Auth.verify().then(isValid => {
+                if (isValid) {
+                    window.location.href = '/dashboard.html';
+                }
+            });
+        }
+
+        // معالجة نموذج تسجيل الدخول
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // إخفاء رسالة الخطأ
+            errorMessage.style.display = 'none';
+
+            // تسجيل الدخول
+            const result = await Auth.login(username, password);
+
+            if (result.success) {
+                // الانتقال إلى لوحة التحكم
+                window.location.href = '/dashboard.html';
+            } else {
+                // عرض رسالة الخطأ
+                errorMessage.textContent = result.message;
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

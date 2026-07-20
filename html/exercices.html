@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التمارين - نَجَاحِي</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- رأس الصفحة مع معلومات التمرين -->
+        <header class="header-exercice">
+            <div class="exercice-info">
+                <h2 id="matiereName">🧮 الحساب</h2>
+                <div class="stats">
+                    <span id="questionCounter">السؤال 1/5</span>
+                    <span id="scoreDisplay">⭐ 0</span>
+                </div>
+            </div>
+            
+            <!-- شريط التقدم -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </header>
+
+        <!-- منطقة السؤال -->
+        <div class="card exercice-card">
+            <!-- نص السؤال -->
+            <div class="question-section">
+                <h3 id="questionText">السؤال سيظهر هنا</h3>
+            </div>
+
+            <!-- خيارات الإجابة -->
+            <div class="answers-section" id="answersSection">
+                <!-- سيتم تعبئتها تلقائياً -->
+            </div>
+
+            <!-- رسالة التغذية الراجعة -->
+            <div class="feedback-section" id="feedbackSection" style="display: none;">
+                <div class="feedback-message" id="feedbackMessage"></div>
+                <div class="feedback-explanation" id="feedbackExplanation"></div>
+            </div>
+
+            <!-- أزرار التحكم -->
+            <div class="control-buttons">
+                <button class="btn-hint" id="hintBtn" onclick="showHint()">
+                    💡 تلميح
+                </button>
+                <button class="btn-check" id="checkBtn" onclick="checkAnswer()">
+                    ✅ تحقق
+                </button>
+                <button class="btn-next" id="nextBtn" onclick="nextQuestion()" style="display: none;">
+                    السؤال التالي ←
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/questions.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

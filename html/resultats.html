@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>النتائج - نَجَاحِي</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- بطاقة النتيجة -->
+        <div class="card result-card">
+            <div class="result-header">
+                <div class="result-icon" id="resultIcon">🏆</div>
+                <h2 id="resultTitle">ممتاز!</h2>
+                <p id="resultMessage">أداء رائع!</p>
+            </div>
+
+            <!-- النتيجة الرقمية -->
+            <div class="result-score">
+                <div class="score-circle">
+                    <span id="scorePercent">0%</span>
+                </div>
+                <p id="scoreDetails">0 من 5 إجابات صحيحة</p>
+            </div>
+
+            <!-- النجوم -->
+            <div class="stars" id="starsDisplay">
+                ⭐⭐⭐
+            </div>
+
+            <!-- أزرار التحكم -->
+            <div class="result-buttons">
+                <button class="btn-primary" onclick="retryExercice()">
+                    🔄 إعادة التمرين
+                </button>
+                <a href="choisir-matiere.html" class="btn-secondary">
+                    📚 اختيار مادة أخرى
+                </a>
+                <a href="index.html" class="btn-secondary">
+                    🏠 الصفحة الرئيسية
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

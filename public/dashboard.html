@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - نَجَاحِي</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header-with-nav">
+            <div class="header-content">
+                <h1>🌟 نَجَاحِي 🌟</h1>
+                <div id="studentInfo" class="student-info"></div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <!-- بطاقة الترحيب -->
+            <div class="welcome-card">
+                <h2 id="welcomeMessage">مرحباً بك!</h2>
+                <p>جاهز للتعلم اليوم؟</p>
+            </div>
+
+            <!-- الإحصائيات -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value" id="totalExams">0</div>
+                    <div class="stat-label">امتحان مكتمل</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="avgPercentage">0%</div>
+                    <div class="stat-label">المعدل العام</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-value" id="bestPercentage">0%</div>
+                    <div class="stat-label">أفضل نتيجة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value" id="excellentCount">0</div>
+                    <div class="stat-label">نتائج ممتازة</div>
+                </div>
+            </div>
+
+            <!-- الإجراءات السريعة -->
+            <div class="quick-actions">
+                <h3>⚡ إجراءات سريعة</h3>
+                <div class="actions-grid">
+                    <a href="/choisir-matiere.html" class="action-card">
+                        <div class="action-icon">📚</div>
+                        <div class="action-text">بدء تمرين جديد</div>
+                    </a>
+                    <a href="/profil.html" class="action-card">
+                        <div class="action-icon">👤</div>
+                        <div class="action-text">ملفي الشخصي</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- آخر النتائج -->
+            <div class="recent-results">
+                <h3>📈 آخر النتائج</h3>
+                <div id="recentResultsList" class="results-list">
+                    <p class="no-results">لا توجد نتائج بعد. ابدأ بتمرين!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        // التحقق من المصادقة
+        (async () => {
+            const isLoggedIn = await requireAuth();
+            if (!isLoggedIn) return;
+
+            // عرض معلومات التلميذ
+            displayStudentInfo();
+
+            // رسالة الترحيب
+            const student = Auth.getStudent();
+            document.getElementById('welcomeMessage').textContent = 
+                `مرحباً ${student.fullName}! 👋`;
+
+            // تحميل الإحصائيات
+            await loadStats();
+
+            // تحميل آخر النتائج
+            await loadRecentResults();
+        })();
+
+        async function loadStats() {
+            const data = await Results.getStats();
+            
+            if (data.success && data.stats) {
+                const stats = data.stats;
+                document.getElementById('totalExams').textContent = stats.total_exams || 0;
+                document.getElementById('avgPercentage').textContent = 
+                    Math.round(stats.average_percentage || 0) + '%';
+                document.getElementById('bestPercentage').textContent = 
+                    Math.round(stats.best_percentage || 0) + '%';
+                document.getElementById('excellentCount').textContent = stats.excellent_count || 0;
+            }
+        }
+
+        async function loadRecentResults() {
+            const data = await Results.getAll();
+            
+            if (data.success && data.results && data.results.length > 0) {
+                const resultsList = document.getElementById('recentResultsList');
+                resultsList.innerHTML = '';
+
+                const recentResults = data.results.slice(0, 5);
+
+                recentResults.forEach(result => {
+                    const resultCard = document.createElement('div');
+                    resultCard.className = 'result-item';
+                    
+                    const date = new Date(result.completed_at).toLocaleDateString('ar-TN');
+                    const percentage = Math.round(result.percentage);
+                    
+                    let statusClass = 'needs-improvement';
+                    if (percentage >= 80) statusClass = 'excellent';
+                    else if (percentage >= 60) statusClass = 'good';
+
+                    resultCard.innerHTML = `
+                        <div class="result-info">
+                            <div class="result-subject">${getSubjectName(result.subject)}</div>
+                            <div class="result-date">${date}</div>
+                        </div>
+                        <div class="result-score ${statusClass}">
+                            ${percentage}%
+                        </div>
+                    `;
+
+                    resultsList.appendChild(resultCard);
+                });
+            }
+        }
+
+        function getSubjectName(subjectId) {
+            const names = {
+                'calcul': '🧮 الحساب',
+                'maths': '🧮 الرياضيات',
+                'eveil': '🔬 الإيقاظ العلمي',
+                'lecture': '📖 القراءة',
+                'production': '✍️ الإنتاج الكتابي',
+                'islamique': '🕌 التربية الإسلامية',
+                'french': '🇫🇷 الفرنسية',
+                'english': '🇬🇧 الإنقليزية'
+            };
+            return names[subjectId] || subjectId;
+        }
+    </script>
+</body>
+</html>
