@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
 
 module.exports = async (req, res) => {
-    // السماح بالطلبات من أي مصدر (CORS)
+    // CORS headers
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -18,11 +18,23 @@ module.exports = async (req, res) => {
     }
 
     try {
+        // التحقق من الاتصال بقاعدة البيانات
+        if (!sql) {
+            console.error('❌ Database connection failed');
+            return res.status(500).json({ 
+                success: false, 
+                message: 'خطأ في الاتصال بقاعدة البيانات' 
+            });
+        }
+
         const { action } = req.query;
+        console.log('🔵 Action:', action, 'Method:', req.method);
 
         // ===== تسجيل حساب جديد =====
         if (action === 'register' && req.method === 'POST') {
             const { username, password, fullName, level } = req.body;
+
+            console.log('📝 Register attempt:', { username, fullName, level });
 
             // التحقق من البيانات
             if (!username || !password || !fullName || !level) {
@@ -55,6 +67,7 @@ module.exports = async (req, res) => {
             `;
 
             const student = result[0];
+            console.log('✅ Student created:', student.id);
 
             // إنشاء JWT Token
             const token = jwt.sign(
@@ -80,7 +93,8 @@ module.exports = async (req, res) => {
         if (action === 'login' && req.method === 'POST') {
             const { username, password } = req.body;
 
-            // البحث عن المستخدم
+            console.log('🔐 Login attempt:', username);
+
             const result = await sql`
                 SELECT id, username, password_hash, full_name, level 
                 FROM students 
@@ -96,7 +110,6 @@ module.exports = async (req, res) => {
 
             const student = result[0];
 
-            // التحقق من كلمة المرور
             const validPassword = await bcrypt.compare(password, student.password_hash);
 
             if (!validPassword) {
@@ -106,14 +119,12 @@ module.exports = async (req, res) => {
                 });
             }
 
-            // تحديث آخر تسجيل دخول
             await sql`
                 UPDATE students 
                 SET last_login = CURRENT_TIMESTAMP 
                 WHERE id = ${student.id}
             `;
 
-            // إنشاء JWT Token
             const token = jwt.sign(
                 { id: student.id, username: student.username },
                 JWT_SECRET,
@@ -176,7 +187,7 @@ module.exports = async (req, res) => {
             } catch (error) {
                 return res.status(401).json({ 
                     success: false, 
-                    message: 'التوكن غير صالح أو منتهي الصلاحية' 
+                    message: 'التوكن غير صالح' 
                 });
             }
         }
@@ -187,11 +198,11 @@ module.exports = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Auth Error:', error);
+        console.error('❌ Auth Error:', error);
         return res.status(500).json({ 
             success: false, 
-            message: 'خطأ في الخادم',
-            error: error.message 
+            message: 'خطأ في الخادم: ' + error.message,
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 };
