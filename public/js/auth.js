@@ -85,31 +85,31 @@ const Auth = {
         }
     },
 
-    // إنشاء حساب جديد
-    async register(username, password, fullName, level) {
-        try {
-            const response = await fetch(`${API_BASE}/auth?action=register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password, fullName, level })
-            });
+   // إنشاء حساب جديد
+async register(username, password, fullName, level) {
+    try {
+        const response = await fetch(`${API_BASE}/auth?action=register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password, fullName, level })
+        });
 
-            const data = await response.json();
+        const data = await response.json();
+        console.log('Registration response:', data); // ← إضافة هذه السطر للتحقق
 
-            if (data.success) {
-                this.saveAuth(data.token, data.student);
-                return { success: true, student: data.student };
-            } else {
-                return { success: false, message: data.message };
-            }
-        } catch (error) {
-            console.error('Register error:', error);
-            return { success: false, message: 'خطأ في الاتصال' };
+        if (data.success) {
+            this.saveAuth(data.token, data.student);
+            return { success: true, student: data.student };
+        } else {
+            return { success: false, message: data.message };
         }
+    } catch (error) {
+        console.error('Register error:', error); // ← إضافة هذه السطر للتحقق
+        return { success: false, message: 'خطأ في الاتصال' };
     }
-};
+}
 
 // ===== كائن Results =====
 const Results = {
