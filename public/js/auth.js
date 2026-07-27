@@ -2,10 +2,14 @@
 
 const API_BASE = '/api';
 
+console.log('✅ auth.js loaded successfully');
+console.log('🔗 API_BASE:', API_BASE);
+
 // ===== كائن Auth =====
 const Auth = {
     // حفظ التوكن والبيانات
     saveAuth(token, student) {
+        console.log('💾 Saving auth data...');
         localStorage.setItem('token', token);
         localStorage.setItem('student', JSON.stringify(student));
     },
@@ -28,6 +32,7 @@ const Auth = {
 
     // تسجيل الخروج
     logout() {
+        console.log('🚪 Logging out...');
         localStorage.removeItem('token');
         localStorage.removeItem('student');
         window.location.href = '/login.html';
@@ -36,16 +41,22 @@ const Auth = {
     // التحقق من التوكن مع الخادم
     async verify() {
         const token = this.getToken();
-        if (!token) return false;
+        if (!token) {
+            console.log('️ No token found');
+            return false;
+        }
 
         try {
+            console.log('🔍 Verifying token...');
             const response = await fetch(`${API_BASE}/auth?action=verify`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
 
+            console.log('📥 Verify response status:', response.status);
             const data = await response.json();
+            console.log('📥 Verify response data:', data);
             
             if (data.success) {
                 this.saveAuth(token, data.student);
@@ -55,7 +66,7 @@ const Auth = {
                 return false;
             }
         } catch (error) {
-            console.error('Verify error:', error);
+            console.error('❌ Verify error:', error);
             return false;
         }
     },
@@ -63,6 +74,7 @@ const Auth = {
     // تسجيل الدخول
     async login(username, password) {
         try {
+            console.log('🔐 Attempting login for:', username);
             const response = await fetch(`${API_BASE}/auth?action=login`, {
                 method: 'POST',
                 headers: {
@@ -71,7 +83,9 @@ const Auth = {
                 body: JSON.stringify({ username, password })
             });
 
+            console.log('📥 Login response status:', response.status);
             const data = await response.json();
+            console.log('📥 Login response data:', data);
 
             if (data.success) {
                 this.saveAuth(data.token, data.student);
@@ -80,36 +94,41 @@ const Auth = {
                 return { success: false, message: data.message };
             }
         } catch (error) {
-            console.error('Login error:', error);
-            return { success: false, message: 'خطأ في الاتصال' };
+            console.error('❌ Login error:', error);
+            return { success: false, message: 'خطأ في الاتصال: ' + error.message };
         }
     },
 
-   // إنشاء حساب جديد
-async register(username, password, fullName, level) {
-    try {
-        const response = await fetch(`${API_BASE}/auth?action=register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password, fullName, level })
-        });
+    // إنشاء حساب جديد
+    async register(username, password, fullName, level) {
+        try {
+            console.log('📝 Attempting registration for:', username);
+            console.log('📝 Registration data:', { username, fullName, level });
+            
+            const response = await fetch(`${API_BASE}/auth?action=register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password, fullName, level })
+            });
 
-        const data = await response.json();
-        console.log('Registration response:', data); // ← إضافة هذه السطر للتحقق
+            console.log('📥 Register response status:', response.status);
+            const data = await response.json();
+            console.log('📥 Register response data:', data);
 
-        if (data.success) {
-            this.saveAuth(data.token, data.student);
-            return { success: true, student: data.student };
-        } else {
-            return { success: false, message: data.message };
+            if (data.success) {
+                this.saveAuth(data.token, data.student);
+                return { success: true, student: data.student };
+            } else {
+                return { success: false, message: data.message };
+            }
+        } catch (error) {
+            console.error('❌ Register error:', error);
+            return { success: false, message: 'خطأ في الاتصال: ' + error.message };
         }
-    } catch (error) {
-        console.error('Register error:', error); // ← إضافة هذه السطر للتحقق
-        return { success: false, message: 'خطأ في الاتصال' };
     }
-}
+};
 
 // ===== كائن Results =====
 const Results = {
@@ -137,7 +156,7 @@ const Results = {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('Save result error:', error);
+            console.error('❌ Save result error:', error);
             return { success: false, message: 'خطأ في الحفظ' };
         }
     },
@@ -157,7 +176,7 @@ const Results = {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('Get results error:', error);
+            console.error('❌ Get results error:', error);
             return { success: false, results: [] };
         }
     },
@@ -177,7 +196,7 @@ const Results = {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('Get stats error:', error);
+            console.error('❌ Get stats error:', error);
             return { success: false, stats: null };
         }
     },
@@ -197,7 +216,7 @@ const Results = {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('Get subject results error:', error);
+            console.error('❌ Get subject results error:', error);
             return { success: false, results: [] };
         }
     }
@@ -226,3 +245,11 @@ function displayStudentInfo() {
         `;
     }
 }
+
+// جعل الكائنات متاحة عالمياً
+window.Auth = Auth;
+window.Results = Results;
+window.requireAuth = requireAuth;
+window.displayStudentInfo = displayStudentInfo;
+
+console.log('✅ Auth and Results objects are ready');

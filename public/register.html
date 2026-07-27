@@ -19,7 +19,7 @@
 
             <form id="registerForm">
                 <div class="form-group">
-                    <label for="fullName">👤 الاسم الكامل</label>
+                    <label for="fullName"> الاسم الكامل</label>
                     <input type="text" id="fullName" placeholder="أدخل اسمك الكامل" required>
                 </div>
 
@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password">🔑 كلمة المرور</label>
+                    <label for="password"> كلمة المرور</label>
                     <input type="password" id="password" placeholder="اختر كلمة مرور" required minlength="6">
                 </div>
 
@@ -48,8 +48,9 @@
                 </div>
 
                 <div id="errorMessage" class="error-message" style="display: none;"></div>
+                <div id="successMessage" class="success-message" style="display: none;"></div>
 
-                <button type="submit" class="btn-primary">
+                <button type="submit" class="btn-primary" id="submitBtn">
                     ✨ إنشاء الحساب
                 </button>
             </form>
@@ -62,38 +63,85 @@
 
     <script src="/js/auth.js"></script>
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        console.log('✅ register.html loaded successfully');
+        
+        // التحقق من وجود تسجيل دخول سابق
+        if (Auth && Auth.isLoggedIn()) {
+            console.log('🔍 User already logged in, redirecting...');
+            Auth.verify().then(isValid => {
+                if (isValid) {
+                    window.location.href = '/dashboard.html';
+                }
+            });
+        }
 
-            const fullName = document.getElementById('fullName').value;
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const level = document.getElementById('level').value;
-            const errorMessage = document.getElementById('errorMessage');
+        // معالجة نموذج التسجيل
+        const registerForm = document.getElementById('registerForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
 
-            // إخفاء رسالة الخطأ
-            errorMessage.style.display = 'none';
+        console.log('🔗 Form element found:', registerForm);
+        console.log('🔗 Submit button found:', submitBtn);
 
-            // التحقق من تطابق كلمات المرور
-            if (password !== confirmPassword) {
-                errorMessage.textContent = 'كلمتا المرور غير متطابقتين';
-                errorMessage.style.display = 'block';
-                return;
-            }
+        if (registerForm) {
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                console.log('📝 Form submitted!');
 
-            // إنشاء الحساب
-            const result = await Auth.register(username, password, fullName, parseInt(level));
+                const fullName = document.getElementById('fullName').value;
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const level = document.getElementById('level').value;
 
-            if (result.success) {
-                // الانتقال إلى لوحة التحكم
-                window.location.href = '/dashboard.html';
-            } else {
-                // عرض رسالة الخطأ
-                errorMessage.textContent = result.message;
-                errorMessage.style.display = 'block';
-            }
-        });
+                console.log('📋 Form data:', { fullName, username, level });
+
+                // إخفاء الرسائل
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+
+                // التحقق من تطابق كلمات المرور
+                if (password !== confirmPassword) {
+                    errorMessage.textContent = '❌ كلمتا المرور غير متطابقتين';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+
+                // تعطيل الزر أثناء الإرسال
+                submitBtn.disabled = true;
+                submitBtn.textContent = '⏳ جاري إنشاء الحساب...';
+
+                try {
+                    console.log('🚀 Calling Auth.register...');
+                    const result = await Auth.register(username, password, fullName, parseInt(level));
+                    console.log('📥 Register result:', result);
+
+                    if (result.success) {
+                        successMessage.textContent = '✅ تم إنشاء الحساب بنجاح! جاري التحويل...';
+                        successMessage.style.display = 'block';
+                        
+                        // الانتظار ثانية ثم التحويل
+                        setTimeout(() => {
+                            window.location.href = '/dashboard.html';
+                        }, 1000);
+                    } else {
+                        errorMessage.textContent = '❌ ' + result.message;
+                        errorMessage.style.display = 'block';
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '✨ إنشاء الحساب';
+                    }
+                } catch (error) {
+                    console.error('❌ Registration error:', error);
+                    errorMessage.textContent = '❌ حدث خطأ غير متوقع: ' + error.message;
+                    errorMessage.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '✨ إنشاء الحساب';
+                }
+            });
+        } else {
+            console.error('❌ Form element not found!');
+        }
     </script>
 </body>
 </html>
