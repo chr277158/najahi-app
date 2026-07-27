@@ -144,7 +144,8 @@ module.exports = async (req, res) => {
             });
         }
 
-        // === التحقق من التوكن ===
+        
+        // === التحتقق من التوكن ===
         if (action === 'verify' && req.method === 'GET') {
             const authHeader = req.headers.authorization;
 
