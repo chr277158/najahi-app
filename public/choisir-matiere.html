@@ -4,29 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>اختر المادة - نَجَاحِي</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <div class="container">
-        <!-- رأس الصفحة -->
         <header class="header">
-            <h1>📚 اختر مادتك</h1>
+            <h1> اختر مادتك</h1>
             <p id="welcomeMessage">أهلاً بك!</p>
         </header>
 
-        <!-- شبكة المواد -->
         <div class="subjects-grid" id="subjectsGrid">
             <!-- سيتم تعبئتها تلقائياً بواسطة JavaScript -->
         </div>
 
-        <!-- زر العودة -->
         <div class="back-button">
-            <a href="index.html" class="btn-secondary">
-                ← العودة للصفحة الرئيسية
+            <a href="/dashboard.html" class="btn-secondary">
+                ← العودة للوحة التحكم
             </a>
         </div>
     </div>
 
-    <script src="js/app.js"></script>
+    <!-- ترتيب مهم: auth.js أولاً، ثم questions.js، ثم app.js -->
+    <script src="/js/auth.js"></script>
+    <script src="/js/questions.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 </html>
