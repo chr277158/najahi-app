@@ -144,7 +144,7 @@ module.exports = async (req, res) => {
             });
         }
 
-        // ===== التحقق من التوكن =====
+        // === التحقق من التوكن ===
         if (action === 'verify' && req.method === 'GET') {
             const authHeader = req.headers.authorization;
 
@@ -205,4 +205,6 @@ module.exports = async (req, res) => {
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
+
+
 };
