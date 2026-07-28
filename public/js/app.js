@@ -180,7 +180,7 @@ function initExercicePage() {
     // عرض السؤال الأول
     displayQuestion();
 }
-
+//test connection
 // ===== عرض السؤال =====
 function displayQuestion() {
     console.log('📝 Displaying question', currentQuestion + 1, 'of', questions.length);
