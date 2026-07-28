@@ -37,7 +37,14 @@
                     <label for="confirmPassword">🔑 تأكيد كلمة المرور</label>
                     <input type="password" id="confirmPassword" placeholder="أعد كتابة كلمة المرور" required>
                 </div>
-
+                <div class="form-group">
+    <label for="gender"> الجنس</label>
+    <select id="gender" required>
+        <option value="">-- اختر --</option>
+        <option value="male">ذكر</option>
+        <option value="female">أنثى</option>
+    </select>
+</div>
                 <div class="form-group">
                     <label for="level">📚 المستوى الدراسي</label>
                     <select id="level" required>
@@ -114,7 +121,9 @@
 
                 try {
                     console.log('🚀 Calling Auth.register...');
-                    const result = await Auth.register(username, password, fullName, parseInt(level));
+                    const gender = document.getElementById('gender').value;
+
+                    const result = await Auth.register(username, password, fullName, parseInt(level), gender);
                     console.log('📥 Register result:', result);
 
                     if (result.success) {

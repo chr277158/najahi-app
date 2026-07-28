@@ -32,16 +32,14 @@ module.exports = async (req, res) => {
 
         // ===== تسجيل حساب جديد =====
         if (action === 'register' && req.method === 'POST') {
-            const { username, password, fullName, level } = req.body;
+           const { username, password, fullName, level, gender } = req.body;
 
-            console.log('📝 Register attempt:', { username, fullName, level });
-
-            // التحقق من البيانات
-            if (!username || !password || !fullName || !level) {
-                return res.status(400).json({ 
-                    success: false, 
-                    message: 'جميع الحقول مطلوبة' 
-                });
+        // التحقق من البيانات
+        if (!username || !password || !fullName || !level || !gender) {
+             return res.status(400).json({ 
+                success: false, 
+                 message: 'جميع الحقول مطلوبة' 
+             });
             }
 
             // التحقق من وجود المستخدم
@@ -60,11 +58,12 @@ module.exports = async (req, res) => {
             const passwordHash = await bcrypt.hash(password, 10);
 
             // إنشاء المستخدم
-            const result = await sql`
-                INSERT INTO students (username, password_hash, full_name, level)
-                VALUES (${username}, ${passwordHash}, ${fullName}, ${level})
-                RETURNING id, username, full_name, level
-            `;
+           
+const result = await sql`
+    INSERT INTO students (username, password_hash, full_name, level, gender)
+    VALUES (${username}, ${passwordHash}, ${fullName}, ${level}, ${gender})
+    RETURNING id, username, full_name, level, gender
+`;
 
             const student = result[0];
             console.log('✅ Student created:', student.id);
@@ -81,11 +80,12 @@ module.exports = async (req, res) => {
                 message: 'تم إنشاء الحساب بنجاح',
                 token,
                 student: {
-                    id: student.id,
-                    username: student.username,
-                    fullName: student.full_name,
-                    level: student.level
-                }
+                        id: student.id,
+                              username: student.username,
+                                 fullName: student.full_name,
+                                level: student.level,
+                             gender: student.gender
+                        }
             });
         }
 

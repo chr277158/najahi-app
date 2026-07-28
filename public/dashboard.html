@@ -5,27 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم - نَجَاحِي</title>
     <link rel="stylesheet" href="/css/style.css">
+    <!-- مكتبة Chart.js للرسوم البيانية -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
         <header class="header-with-nav">
             <div class="header-content">
-                <h1>🌟 نَجَاحِي 🌟</h1>
+                <h1>🌟 نَجَاحِي </h1>
                 <div id="studentInfo" class="student-info"></div>
             </div>
         </header>
 
         <div class="dashboard">
-            <!-- بطاقة الترحيب -->
+            <!-- بطاقة الترحيب المحسّنة -->
             <div class="welcome-card">
                 <h2 id="welcomeMessage">مرحباً بك!</h2>
-                <p>جاهز للتعلم اليوم؟</p>
+                <p id="welcomeSubMessage">جاهز للتعلم اليوم؟</p>
+                
+                <!-- سلسلة الأيام المتتالية -->
+                <div class="streak-badge" id="streakBadge" style="display: none;">
+                     <span id="streakCount">0</span> يوم متتالي
+                </div>
             </div>
+
+            <!-- زر بدء تمرين جديد (مُبرز) -->
+            <a href="/choisir-matiere.html" class="start-exercice-btn">
+                <span class="btn-icon">🚀</span>
+                <span class="btn-text">ابدأ تمريناً جديداً الآن!</span>
+                <span class="btn-arrow">←</span>
+            </a>
 
             <!-- الإحصائيات -->
             <div class="stats-grid" id="statsGrid">
                 <div class="stat-card">
-                    <div class="stat-icon">📝</div>
+                    <div class="stat-icon"></div>
                     <div class="stat-value" id="totalExams">0</div>
                     <div class="stat-label">امتحان مكتمل</div>
                 </div>
@@ -46,24 +60,17 @@
                 </div>
             </div>
 
-            <!-- الإجراءات السريعة -->
-            <div class="quick-actions">
-                <h3>⚡ إجراءات سريعة</h3>
-                <div class="actions-grid">
-                    <a href="/choisir-matiere.html" class="action-card">
-                        <div class="action-icon">📚</div>
-                        <div class="action-text">بدء تمرين جديد</div>
-                    </a>
-                    <a href="/profil.html" class="action-card">
-                        <div class="action-icon">👤</div>
-                        <div class="action-text">ملفي الشخصي</div>
-                    </a>
+            <!-- الرسم البياني لتطور المستوى -->
+            <div class="chart-card">
+                <h3>📈 تطور مستواك عبر الزمن</h3>
+                <div class="chart-container">
+                    <canvas id="progressChart"></canvas>
                 </div>
             </div>
 
-            <!-- آخر النتائج -->
+            <!-- آخر النتائج (قابلة للنقر) -->
             <div class="recent-results">
-                <h3>📈 آخر النتائج</h3>
+                <h3>📈 آخر النتائج (اضغط للتفاصيل)</h3>
                 <div id="recentResultsList" class="results-list">
                     <p class="no-results">لا توجد نتائج بعد. ابدأ بتمرين!</p>
                 </div>
@@ -73,24 +80,32 @@
 
     <script src="/js/auth.js"></script>
     <script>
-        // التحقق من المصادقة
+        let progressChart = null;
+
         (async () => {
             const isLoggedIn = await requireAuth();
             if (!isLoggedIn) return;
 
-            // عرض معلومات التلميذ
             displayStudentInfo();
 
-            // رسالة الترحيب
             const student = Auth.getStudent();
-            document.getElementById('welcomeMessage').textContent = 
-                `مرحباً ${student.fullName}! 👋`;
+            
+            // رسالة ترحيب ديناميكية حسب الجنس
+            const welcomeMsg = document.getElementById('welcomeMessage');
+            const welcomeSub = document.getElementById('welcomeSubMessage');
+            
+            if (student.gender === 'female') {
+                welcomeMsg.textContent = `مرحباً ${student.fullName}! `;
+                welcomeSub.textContent = 'جاهزة للتعلم اليوم؟ 🌸';
+            } else {
+                welcomeMsg.textContent = `مرحباً ${student.fullName}! 👋`;
+                welcomeSub.textContent = 'جاهز للتعلم اليوم؟ 💪';
+            }
 
-            // تحميل الإحصائيات
             await loadStats();
-
-            // تحميل آخر النتائج
             await loadRecentResults();
+            await loadProgressChart();
+            await calculateStreak();
         })();
 
         async function loadStats() {
@@ -107,6 +122,118 @@
             }
         }
 
+        // حساب سلسلة الأيام المتتالية
+        async function calculateStreak() {
+            const data = await Results.getAll();
+            
+            if (!data.success || !data.results || data.results.length === 0) {
+                return;
+            }
+
+            const results = data.results;
+            let streak = 0;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // ترتيب النتائج حسب التاريخ
+            const dates = [...new Set(results.map(r => {
+                const d = new Date(r.completed_at);
+                d.setHours(0, 0, 0, 0);
+                return d.getTime();
+            }))].sort((a, b) => b - a);
+
+            // حساب السلسلة
+            let checkDate = today;
+            for (const date of dates) {
+                const diff = (checkDate - date) / (1000 * 60 * 60 * 24);
+                if (diff === 0 || diff === 1) {
+                    streak++;
+                    checkDate = new Date(date);
+                    checkDate.setDate(checkDate.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+
+            if (streak > 0) {
+                const badge = document.getElementById('streakBadge');
+                const count = document.getElementById('streakCount');
+                badge.style.display = 'inline-block';
+                count.textContent = streak;
+            }
+        }
+
+        // تحميل الرسم البياني
+        async function loadProgressChart() {
+            const data = await Results.getAll();
+            
+            if (!data.success || !data.results || data.results.length === 0) {
+                return;
+            }
+
+            // ترتيب النتائج من الأقدم للأحدث
+            const results = [...data.results].reverse().slice(-10);
+            
+            const labels = results.map(r => {
+                const date = new Date(r.completed_at);
+                return date.toLocaleDateString('ar-TN', { day: '2-digit', month: '2-digit' });
+            });
+
+            const percentages = results.map(r => Math.round(r.percentage));
+
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            if (progressChart) {
+                progressChart.destroy();
+            }
+
+            progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'النسبة المئوية (%)',
+                        data: percentages,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         async function loadRecentResults() {
             const data = await Results.getAll();
             
@@ -116,9 +243,9 @@
 
                 const recentResults = data.results.slice(0, 5);
 
-                recentResults.forEach(result => {
+                recentResults.forEach((result, index) => {
                     const resultCard = document.createElement('div');
-                    resultCard.className = 'result-item';
+                    resultCard.className = 'result-item clickable';
                     
                     const date = new Date(result.completed_at).toLocaleDateString('ar-TN');
                     const percentage = Math.round(result.percentage);
@@ -132,14 +259,43 @@
                             <div class="result-subject">${getSubjectName(result.subject)}</div>
                             <div class="result-date">${date}</div>
                         </div>
-                        <div class="result-score ${statusClass}">
+                        <div class="result-score-badge ${statusClass}">
                             ${percentage}%
                         </div>
                     `;
 
+                    // عند الضغط على النتيجة - عرض التفاصيل
+                    resultCard.addEventListener('click', () => {
+                        showResultDetails(result);
+                    });
+
                     resultsList.appendChild(resultCard);
                 });
             }
+        }
+
+        // عرض تفاصيل النتيجة
+        function showResultDetails(result) {
+            const percentage = Math.round(result.percentage);
+            const date = new Date(result.completed_at).toLocaleString('ar-TN');
+            
+            let message = '';
+            if (percentage >= 90) {
+                message = '🏆 أداء ممتاز! استمر في التميز.';
+            } else if (percentage >= 70) {
+                message = '👏 أداء جيد جداً! يمكنك التحسن أكثر.';
+            } else if (percentage >= 50) {
+                message = '💪 أداء مقبول. راجع الدرس وحاول مرة أخرى.';
+            } else {
+                message = '🌱 لا بأس! راجع الدرس جيداً وأعد المحاولة.';
+            }
+
+            alert(`📊 تفاصيل النتيجة:\n\n` +
+                  `المادة: ${getSubjectName(result.subject)}\n` +
+                  `التاريخ: ${date}\n` +
+                  `النتيجة: ${result.score} من ${result.total_questions}\n` +
+                  `النسبة: ${percentage}%\n\n` +
+                  `${message}`);
         }
 
         function getSubjectName(subjectId) {
@@ -151,7 +307,7 @@
                 'production': '✍️ الإنتاج الكتابي',
                 'islamique': '🕌 التربية الإسلامية',
                 'french': '🇫🇷 الفرنسية',
-                'english': '🇬🇧 الإنقليزية'
+                'english': '🇧 الإنقليزية'
             };
             return names[subjectId] || subjectId;
         }

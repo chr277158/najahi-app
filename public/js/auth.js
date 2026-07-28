@@ -100,34 +100,30 @@ const Auth = {
     },
 
     // إنشاء حساب جديد
-    async register(username, password, fullName, level) {
-        try {
-            console.log('📝 Attempting registration for:', username);
-            console.log('📝 Registration data:', { username, fullName, level });
-            
-            const response = await fetch(`${API_BASE}/auth?action=register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password, fullName, level })
-            });
+    // إنشاء حساب جديد
+async register(username, password, fullName, level, gender) {
+    try {
+        const response = await fetch(`${API_BASE}/auth?action=register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password, fullName, level, gender })
+        });
 
-            console.log('📥 Register response status:', response.status);
-            const data = await response.json();
-            console.log('📥 Register response data:', data);
+        const data = await response.json();
 
-            if (data.success) {
-                this.saveAuth(data.token, data.student);
-                return { success: true, student: data.student };
-            } else {
-                return { success: false, message: data.message };
-            }
-        } catch (error) {
-            console.error('❌ Register error:', error);
-            return { success: false, message: 'خطأ في الاتصال: ' + error.message };
+        if (data.success) {
+            this.saveAuth(data.token, data.student);
+            return { success: true, student: data.student };
+        } else {
+            return { success: false, message: data.message };
         }
+    } catch (error) {
+        console.error('❌ Register error:', error);
+        return { success: false, message: 'خطأ في الاتصال: ' + error.message };
     }
+}
 };
 
 // ===== كائن Results =====
