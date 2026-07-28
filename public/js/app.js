@@ -128,11 +128,13 @@ function startExercice(subjectId) {
 
 // ===== تهيئة صفحة التمارين =====
 function initExercicePage() {
-    console.log('📝 Initializing exercice page...');
+    console.log(' Initializing exercice page...');
     
     const subjectId = localStorage.getItem('currentSubject');
+    console.log('🎯 Subject ID from localStorage:', subjectId);
+    
     if (!subjectId) {
-        console.error('❌ No subject selected');
+        console.error('❌ No subject selected, redirecting...');
         window.location.href = '/choisir-matiere.html';
         return;
     }
@@ -140,15 +142,14 @@ function initExercicePage() {
     // تحميل الأسئلة
     if (typeof getQuestionsBySubject === 'function') {
         questions = getQuestionsBySubject(subjectId);
+        console.log('📚 Questions loaded:', questions.length, 'questions for', subjectId);
     } else {
-        console.error('❌ getQuestionsBySubject function not found');
+        console.error('❌ getQuestionsBySubject function not found!');
         questions = [];
     }
     
-    console.log(' Questions loaded:', questions.length);
-    
     if (questions.length === 0) {
-        alert('لا توجد تمارين متاحة حالياً لهذه المادة');
+        alert('⚠️ لا توجد تمارين متاحة حالياً لهذه المادة');
         window.location.href = '/choisir-matiere.html';
         return;
     }
@@ -158,16 +159,17 @@ function initExercicePage() {
         'calcul': '🧮 الحساب',
         'maths': '🧮 الرياضيات',
         'eveil': '🔬 الإيقاظ العلمي',
-        'lecture': ' القراءة',
+        'lecture': '📖 القراءة',
         'production': '✍️ الإنتاج الكتابي',
         'islamique': '🕌 التربية الإسلامية',
         'french': '🇫🇷 اللغة الفرنسية',
-        'english': '🇬🇧 اللغة الإنقليزية'
+        'english': '🇬 اللغة الإنقليزية'
     };
     
     const matiereName = document.getElementById('matiereName');
     if (matiereName) {
         matiereName.textContent = subjectNames[subjectId] || subjectId;
+        console.log(' Displaying subject name:', subjectNames[subjectId]);
     }
     
     // إعادة تعيين المتغيرات
