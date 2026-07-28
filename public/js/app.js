@@ -100,23 +100,80 @@ function loadSubjects() {
 
 // ===== الحصول على المواد حسب المستوى =====
 function getSubjectsByLevel(level) {
-    if (level === 3 || level === '3') {
+    // تحويل المستوى إلى رقم
+    const levelNum = parseInt(level);
+    
+    // ===== السنة الأولى ابتدائي =====
+    if (levelNum === 1) {
+        return [
+            { id: 'calcul', name: 'الحساب', icon: '🧮', count: 15 },
+            { id: 'eveil', name: 'الإيقاظ العلمي', icon: '🔬', count: 10 },
+            { id: 'lecture', name: 'القراءة', icon: '📖', count: 8 },
+            { id: 'islamique', name: 'التربية الإسلامية', icon: '🕌', count: 5 }
+        ];
+    }
+    
+    // ===== السنة الثانية ابتدائي =====
+    if (levelNum === 2) {
+        return [
+            { id: 'calcul', name: 'الحساب', icon: '🧮', count: 20 },
+            { id: 'eveil', name: 'الإيقاظ العلمي', icon: '🔬', count: 12 },
+            { id: 'lecture', name: 'القراءة', icon: '', count: 10 },
+            { id: 'production', name: 'الإنتاج الكتابي', icon: '✍️', count: 8 },
+            { id: 'islamique', name: 'التربية الإسلامية', icon: '🕌', count: 6 },
+            { id: 'civique', name: 'التربية المدنية', icon: '🏛️', count: 5 }
+        ];
+    }
+    
+    // ===== السنة الثالثة ابتدائي =====
+    if (levelNum === 3) {
         return [
             { id: 'calcul', name: 'الحساب', icon: '🧮', count: 30 },
-            { id: 'eveil', name: 'الإيقاظ العلمي', icon: '🔬', count: 10 },
+            { id: 'eveil', name: 'الإيقاظ العلمي', icon: '', count: 10 },
             { id: 'lecture', name: 'القراءة', icon: '📖', count: 8 },
             { id: 'production', name: 'الإنتاج الكتابي', icon: '✍️', count: 6 },
             { id: 'islamique', name: 'التربية الإسلامية', icon: '🕌', count: 5 }
         ];
-    } else {
+    }
+    
+    // ===== السنة الرابعة ابتدائي =====
+    if (levelNum === 4) {
         return [
-            { id: 'maths', name: 'الرياضيات', icon: '', count: 10 },
-            { id: 'eveil', name: 'الإيقاظ العلمي', icon: '🔬', count: 10 },
-            { id: 'lecture', name: 'القراءة', icon: '📖', count: 8 },
-            { id: 'french', name: 'اللغة الفرنسية', icon: '🇫🇷', count: 6 },
-            { id: 'english', name: 'اللغة الإنقليزية', icon: '🇬🇧', count: 6 }
+            { id: 'maths', name: 'الرياضيات', icon: '🧮', count: 25 },
+            { id: 'eveil', name: 'الإيقاظ العلمي', icon: '🔬', count: 15 },
+            { id: 'lecture', name: 'القراءة', icon: '📖', count: 12 },
+            { id: 'production', name: 'الإنتاج الكتابي', icon: '️', count: 10 },
+            { id: 'french', name: 'اللغة الفرنسية', icon: '🇫🇷', count: 10 },
+            { id: 'english', name: 'اللغة الإنقليزية', icon: '🇬🇧', count: 8 },
+            { id: 'islamique', name: 'التربية الإسلامية', icon: '🕌', count: 8 },
+            { id: 'civique', name: 'التربية المدنية', icon: '🏛️', count: 6 }
         ];
     }
+    
+    // ===== السنة الخامسة ابتدائي =====
+    if (levelNum === 5) {
+        return [
+            { id: 'maths', name: 'الرياضيات', icon: '🧮', count: 20 },
+            { id: 'eveil', name: 'الإيقاظ العلمي', icon: '🔬', count: 12 },
+            { id: 'lecture', name: 'القراءة', icon: '', count: 10 },
+            { id: 'french', name: 'اللغة الفرنسية', icon: '🇫🇷', count: 8 },
+            { id: 'english', name: 'اللغة الإنقليزية', icon: '🇧', count: 6 }
+        ];
+    }
+    
+    // ===== السنة السادسة ابتدائي =====
+    if (levelNum === 6) {
+        return [
+            { id: 'maths', name: 'الرياضيات', icon: '🧮', count: 25 },
+            { id: 'eveil', name: 'الإيقاظ العلمي', icon: '🔬', count: 15 },
+            { id: 'lecture', name: 'القراءة', icon: '', count: 12 },
+            { id: 'french', name: 'اللغة الفرنسية', icon: '🇫🇷', count: 10 },
+            { id: 'english', name: 'اللغة الإنقليزية', icon: '🇬🇧', count: 8 }
+        ];
+    }
+    
+    // fallback
+    return [];
 }
 
 // ===== بدء التمرين =====
@@ -155,16 +212,23 @@ function initExercicePage() {
     }
     
     // عرض اسم المادة
-    const subjectNames = {
-        'calcul': '🧮 الحساب',
-        'maths': '🧮 الرياضيات',
-        'eveil': '🔬 الإيقاظ العلمي',
-        'lecture': '📖 القراءة',
-        'production': '✍️ الإنتاج الكتابي',
-        'islamique': '🕌 التربية الإسلامية',
-        'french': '🇫🇷 اللغة الفرنسية',
-        'english': '🇬 اللغة الإنقليزية'
-    };
+   const subjectNames = {
+    'calcul': '🧮 الحساب',
+    'calcul_s2': ' الحساب (سنة 2)',
+    'maths': '🧮 الرياضيات',
+    'maths_s4': '🧮 الرياضيات (سنة 4)',
+    'eveil': '🔬 الإيقاظ العلمي',
+    'eveil_s2': '🔬 الإيقاظ العلمي (سنة 2)',
+    'eveil_s4': '🔬 الإيقاظ العلمي (سنة 4)',
+    'lecture': ' القراءة',
+    'production': '✍️ الإنتاج الكتابي',
+    'islamique': '🕌 التربية الإسلامية',
+    'civique': '🏛️ التربية المدنية',
+    'civique_s2': '🏛️ التربية المدنية (سنة 2)',
+    'civique_s4': '🏛️ التربية المدنية (سنة 4)',
+    'french': '🇷 اللغة الفرنسية',
+    'english': '🇬🇧 اللغة الإنقليزية'
+};
     
     const matiereName = document.getElementById('matiereName');
     if (matiereName) {
