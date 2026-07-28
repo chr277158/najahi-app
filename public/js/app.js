@@ -114,14 +114,14 @@ function getSubjectsByLevel(level) {
     }
     
     // ===== السنة الثانية ابتدائي =====
+    // ===== السنة الثانية ابتدائي =====
     if (levelNum === 2) {
         return [
-            { id: 'calcul', name: 'الحساب', icon: '🧮', count: 20 },
-            { id: 'eveil', name: 'الإيقاظ العلمي', icon: '🔬', count: 12 },
-            { id: 'lecture', name: 'القراءة', icon: '', count: 10 },
-            { id: 'production', name: 'الإنتاج الكتابي', icon: '✍️', count: 8 },
-            { id: 'islamique', name: 'التربية الإسلامية', icon: '🕌', count: 6 },
-            { id: 'civique', name: 'التربية المدنية', icon: '🏛️', count: 5 }
+            { id: 'calcul_s2', name: 'الحساب', icon: '🧮', count: 15 },
+            { id: 'eveil_s2', name: 'الإيقاظ العلمي', icon: '🔬', count: 10 },
+            { id: 'lecture_s2', name: 'القراءة', icon: '📖', count: 6 },
+            { id: 'production_s2', name: 'الإنتاج الكتابي', icon: '✍️', count: 3 },
+            { id: 'civique_s2', name: 'التربية المدنية', icon: '🏛️', count: 5 }
         ];
     }
     
@@ -227,7 +227,8 @@ function initExercicePage() {
     'civique_s2': '🏛️ التربية المدنية (سنة 2)',
     'civique_s4': '🏛️ التربية المدنية (سنة 4)',
     'french': '🇷 اللغة الفرنسية',
-    'english': '🇬🇧 اللغة الإنقليزية'
+    'english': '🇬🇧 اللغة الإنقليزية',
+    'production_s2': '✍️ الإنتاج الكتابي (سنة 2)',
 };
     
     const matiereName = document.getElementById('matiereName');
